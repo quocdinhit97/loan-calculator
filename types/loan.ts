@@ -4,6 +4,12 @@ export type InterestPhase = {
     duration: number; // Duration in months
 };
 
+export type ExtraPaymentPhase = {
+    id: string;
+    duration: number; // Duration in months
+    monthlyAmount: number; // Monthly extra payment amount for this phase
+};
+
 export type OneTimePayment = {
     id: string;
     amount: number;
@@ -14,16 +20,24 @@ export type LoanInput = {
     principal: number;
     loanTermYears: number;
     startDate: string; // ISO date string YYYY-MM-DD
-    interestPhases: InterestPhase[];
-    prepayment: {
-        monthlyExtra: number;
-        oneTimePayments: OneTimePayment[];
-        penalty: {
-            enabled: boolean;
-            rate: number; // Percentage
-            maxAmount?: number;
-            durationMonths?: number; // Apply penalty for first N months
-        };
+    // Interest Rate Structure
+    baseInterestRate: number; // Default/base interest rate (e.g., 8.5%)
+    interestPhases: InterestPhase[]; // Optional phases that override base rate
+    // Extra Payments
+    extraPaymentPhases: ExtraPaymentPhase[]; // Multiple phases for extra payments
+    oneTimePayments: OneTimePayment[]; // One-time extra payments
+    // Fees
+    fees: {
+        originationFee: number; // Percentage (e.g., 1 for 1%)
+        earlyRepaymentPenalty: number; // Percentage
+        fixedProcessingFee: number; // Fixed amount
+    };
+    // Early Repayment Penalty (separate from fees, applied when making extra payments)
+    earlyRepaymentPenaltyConfig: {
+        enabled: boolean;
+        rate: number; // Percentage
+        maxAmount?: number;
+        durationMonths?: number; // Apply penalty for first N months
     };
 };
 
