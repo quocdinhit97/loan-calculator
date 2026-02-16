@@ -1,0 +1,36 @@
+
+> loan-calc@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.1.7
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./app/page.tsx
+Module not found: Can't resolve '@/components/loan/LoanForm'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./app/result/page.tsx
+Module not found: Can't resolve '@/lib/loanEngine'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./app/result/page.tsx
+Module not found: Can't resolve '@/components/loan/LoanSummary'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./app/result/page.tsx
+Module not found: Can't resolve '@/components/loan/LoanChart'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./app/result/page.tsx
+Module not found: Can't resolve '@/components/loan/LoanTable'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors

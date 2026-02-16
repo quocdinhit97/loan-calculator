@@ -1,0 +1,73 @@
+
+> loan-calc@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.1.7
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./components/ui/design-system.tsx
+Error:   x 'const' declarations must be initialized
+   ,-[C:\Personalization\vibecode\loan-calc\components\ui\design-system.tsx:5:1]
+ 2 | 
+ 3 | export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'outline' }>(
+ 4 |     ({ className, variant = 'primary', ...props }, ref) => {
+ 5 |         const base specificStyles = {
+   :               ^^^^
+ 6 |             primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+ 7 |             secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+ 7 |             outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+   `----
+  x Expected a semicolon
+   ,-[C:\Personalization\vibecode\loan-calc\components\ui\design-system.tsx:5:1]
+ 2 | 
+ 3 | export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'outline' }>(
+ 4 |     ({ className, variant = 'primary', ...props }, ref) => {
+ 5 |         const base specificStyles = {
+   :                    ^^^^^^^^^^^^^^
+ 6 |             primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+ 7 |             secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+ 7 |             outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/ui/design-system.tsx
+./components/loan/LoanForm.tsx
+
+./components/ui/design-system.tsx
+Error:   x 'const' declarations must be initialized
+   ,-[C:\Personalization\vibecode\loan-calc\components\ui\design-system.tsx:5:1]
+ 2 | 
+ 3 | export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'outline' }>(
+ 4 |     ({ className, variant = 'primary', ...props }, ref) => {
+ 5 |         const base specificStyles = {
+   :               ^^^^
+ 6 |             primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+ 7 |             secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+ 7 |             outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+   `----
+  x Expected a semicolon
+   ,-[C:\Personalization\vibecode\loan-calc\components\ui\design-system.tsx:5:1]
+ 2 | 
+ 3 | export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'outline' }>(
+ 4 |     ({ className, variant = 'primary', ...props }, ref) => {
+ 5 |         const base specificStyles = {
+   :                    ^^^^^^^^^^^^^^
+ 6 |             primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+ 7 |             secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+ 7 |             outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+   `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/ui/design-system.tsx
+./app/result/page.tsx
+
+
+> Build failed because of webpack errors
