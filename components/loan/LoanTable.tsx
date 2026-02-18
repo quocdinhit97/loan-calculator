@@ -11,7 +11,7 @@ interface LoanTableProps {
 export default function LoanTable({ schedule }: LoanTableProps) {
     const [showAll, setShowAll] = useState(false);
     const displayCount = showAll ? schedule.length : 12; // Show first year by default
-
+    console.log(schedule);
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(amount);
     };

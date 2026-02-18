@@ -30,6 +30,33 @@ function calculatePMT(principal: number, annualRate: number, months: number): nu
 }
 
 /**
+ * Calculates interest rate sensitivity analysis.
+ * Returns monthly payment for different interest rate scenarios.
+ */
+export function calculateInterestSensitivity(
+    principal: number,
+    loanTermYears: number,
+    baseInterestRate: number,
+    fees: { originationFee: number; fixedProcessingFee: number }
+): Array<{ rate: number; monthlyPayment: number }> {
+    const totalMonths = loanTermYears * 12;
+    const originationFeeAmount = principal * (fees.originationFee / 100);
+    const effectivePrincipal = principal + originationFeeAmount + fees.fixedProcessingFee;
+
+    const scenarios = [-1, -0.5, 0, 0.5, 1];
+
+    return scenarios.map(adjustment => {
+        const adjustedRate = baseInterestRate + adjustment;
+        const monthlyPayment = calculatePMT(effectivePrincipal, adjustedRate, totalMonths);
+
+        return {
+            rate: adjustedRate,
+            monthlyPayment: monthlyPayment
+        };
+    });
+}
+
+/**
  * Gets the interest rate for a specific month.
  * If no phases defined or month exceeds phases, use base rate.
  * If phases defined, use last phase's rate for remaining months.
@@ -51,8 +78,7 @@ function getRateForMonth(
         accumulatedMonths += phase.duration;
     }
 
-    // If monthIdx exceeds all phases, use last phase's rate
-    return phases[phases.length - 1].rate;
+    return baseRate;
 }
 
 /**

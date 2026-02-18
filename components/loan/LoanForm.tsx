@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { LoanInput, InterestPhase, ExtraPaymentPhase } from '@/types/loan';
-import { Button, Input, Label, Card, Switch } from '@/components/ui/design-system';
+import React, {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {ExtraPaymentPhase, InterestPhase, LoanInput} from '@/types/loan';
+import {Button, Card, Input, Label, Switch} from '@/components/ui/design-system';
+import {formatNumber, formatVND, parseVND} from "@/lib/utils";
+import {Wallet2} from "lucide-react";
 
 export default function LoanForm() {
     const router = useRouter();
@@ -28,6 +30,11 @@ export default function LoanForm() {
         },
     });
 
+    const [principalDisplay, setPrincipalDisplay] = useState(
+        formData?.principal ? formatNumber(formData.principal) : '2000000000'
+    );
+    const [extraPaymentPhasesDisplay, setExtraPaymentPhasesDisplay] = useState('');
+
     const [validationErrors, setValidationErrors] = useState<{
         interestPhases?: string;
         extraPaymentPhases?: string;
@@ -38,8 +45,8 @@ export default function LoanForm() {
     // Interest Phase handlers
     const handleInterestPhaseChange = (index: number, field: keyof InterestPhase, value: number) => {
         const newPhases = [...formData.interestPhases];
-        newPhases[index] = { ...newPhases[index], [field]: value };
-        setFormData({ ...formData, interestPhases: newPhases });
+        newPhases[index] = {...newPhases[index], [field]: value};
+        setFormData({...formData, interestPhases: newPhases});
         validatePhases();
     };
 
@@ -48,22 +55,26 @@ export default function LoanForm() {
             ...formData,
             interestPhases: [
                 ...formData.interestPhases,
-                { id: Math.random().toString(), rate: formData.baseInterestRate, duration: 12 },
+                {id: Math.random().toString(), rate: formData.baseInterestRate, duration: 12},
             ],
         });
     };
 
     const removeInterestPhase = (index: number) => {
         const newPhases = formData.interestPhases.filter((_, i) => i !== index);
-        setFormData({ ...formData, interestPhases: newPhases });
+        setFormData({...formData, interestPhases: newPhases});
         validatePhases();
     };
 
     // Extra Payment Phase handlers
-    const handleExtraPaymentPhaseChange = (index: number, field: keyof ExtraPaymentPhase, value: number) => {
+    const handleExtraPaymentPhaseChange = (index: number, field: keyof ExtraPaymentPhase, value: string) => {
+        const newValue = parseVND(value)
+        if (field === 'monthlyAmount') {
+            setExtraPaymentPhasesDisplay(formatNumber(newValue));
+        }
         const newPhases = [...formData.extraPaymentPhases];
-        newPhases[index] = { ...newPhases[index], [field]: value };
-        setFormData({ ...formData, extraPaymentPhases: newPhases });
+        newPhases[index] = {...newPhases[index], [field]: newValue};
+        setFormData({...formData, extraPaymentPhases: newPhases});
         validatePhases();
     };
 
@@ -72,14 +83,14 @@ export default function LoanForm() {
             ...formData,
             extraPaymentPhases: [
                 ...formData.extraPaymentPhases,
-                { id: Math.random().toString(), duration: 12, monthlyAmount: 0 },
+                {id: Math.random().toString(), duration: 12, monthlyAmount: 0},
             ],
         });
     };
 
     const removeExtraPaymentPhase = (index: number) => {
         const newPhases = formData.extraPaymentPhases.filter((_, i) => i !== index);
-        setFormData({ ...formData, extraPaymentPhases: newPhases });
+        setFormData({...formData, extraPaymentPhases: newPhases});
         validatePhases();
     };
 
@@ -117,19 +128,29 @@ export default function LoanForm() {
         router.push(`/result?${searchParams.toString()}`);
     };
 
+    const handlerOnchangePrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const numericValue = parseVND(value);
+        setPrincipalDisplay(formatNumber(numericValue));
+        setFormData({...formData, principal: numericValue});
+    }
+
     return (
         <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto p-4">
             {/* Loan Info */}
             <Card>
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Thông tin khoản vay</h2>
+                <div className="flex gap-2">
+                    <Wallet2 className="text-primary"/>
+                    <h2 className="text-xl font-bold mb-4 text-foreground"> Thông tin khoản vay</h2>
+                </div>
                 <div className="space-y-4">
                     <div>
                         <Label htmlFor="principal">Số tiền vay (VND)</Label>
                         <Input
                             id="principal"
-                            type="number"
-                            value={formData.principal}
-                            onChange={(e) => setFormData({ ...formData, principal: Number(e.target.value) })}
+                            type="text"
+                            value={principalDisplay}
+                            onChange={handlerOnchangePrincipal}
                             required
                         />
                     </div>
@@ -140,7 +161,7 @@ export default function LoanForm() {
                             type="number"
                             value={formData.loanTermYears}
                             onChange={(e) => {
-                                setFormData({ ...formData, loanTermYears: Number(e.target.value) });
+                                setFormData({...formData, loanTermYears: Number(e.target.value)});
                                 setTimeout(validatePhases, 0);
                             }}
                             required
@@ -152,7 +173,7 @@ export default function LoanForm() {
                             id="date"
                             type="date"
                             value={formData.startDate}
-                            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                            onChange={(e) => setFormData({...formData, startDate: e.target.value})}
                             required
                         />
                     </div>
@@ -171,10 +192,10 @@ export default function LoanForm() {
                             type="number"
                             step="0.1"
                             value={formData.baseInterestRate}
-                            onChange={(e) => setFormData({ ...formData, baseInterestRate: Number(e.target.value) })}
+                            onChange={(e) => setFormData({...formData, baseInterestRate: Number(e.target.value)})}
                             required
                         />
-                        <p className="text-xs text-blue-600 mt-1">
+                        <p className="text-xs text-ring mt-1">
                             Áp dụng cho toàn bộ khoản vay nếu không có giai đoạn lãi suất nào được thêm
                         </p>
                     </div>
@@ -192,7 +213,8 @@ export default function LoanForm() {
                     {formData.interestPhases.length > 0 && (
                         <div className="space-y-3">
                             {formData.interestPhases.map((phase, index) => (
-                                <div key={phase.id} className="flex gap-3 items-end p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div key={phase.id}
+                                     className="flex gap-3 items-end p-3 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="flex-1">
                                         <Label>Lãi suất (%/năm)</Label>
                                         <Input
@@ -247,22 +269,23 @@ export default function LoanForm() {
                 {formData.extraPaymentPhases.length > 0 ? (
                     <div className="space-y-3">
                         {formData.extraPaymentPhases.map((phase, index) => (
-                            <div key={phase.id} className="flex gap-3 items-end p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <div key={phase.id}
+                                 className="flex gap-3 items-end p-3 bg-gray-50 rounded-lg border border-gray-200">
                                 <div className="flex-1">
                                     <Label>Thời gian (tháng)</Label>
                                     <Input
-                                        type="number"
+                                        type="text"
                                         value={phase.duration}
-                                        onChange={(e) => handleExtraPaymentPhaseChange(index, 'duration', Number(e.target.value))}
+                                        onChange={(e) => handleExtraPaymentPhaseChange(index, 'duration', String(e.target.value))}
                                         required
                                     />
                                 </div>
                                 <div className="flex-1">
                                     <Label>Số tiền trả thêm (VND/tháng)</Label>
                                     <Input
-                                        type="number"
-                                        value={phase.monthlyAmount}
-                                        onChange={(e) => handleExtraPaymentPhaseChange(index, 'monthlyAmount', Number(e.target.value))}
+                                        type="text"
+                                        value={extraPaymentPhasesDisplay}
+                                        onChange={(e) => handleExtraPaymentPhaseChange(index, 'monthlyAmount', String(e.target.value))}
                                         required
                                     />
                                 </div>
@@ -279,7 +302,8 @@ export default function LoanForm() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-8 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                    <div
+                        className="text-center py-8 text-gray-400 bg-gray-50 rounded-lg border border-dashed border-gray-300">
                         <p className="text-sm">Chưa có giai đoạn trả thêm nào</p>
                         <p className="text-xs mt-1">Nhấn "Thêm giai đoạn" để bắt đầu</p>
                     </div>
@@ -294,13 +318,14 @@ export default function LoanForm() {
                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                             <Label className="mb-0">Áp dụng phí phạt khi trả thêm?</Label>
-                            <p className="text-sm text-gray-500">Tính phí khi thực hiện thanh toán thêm trong thời gian cam kết</p>
+                            <p className="text-sm text-gray-500">Tính phí khi thực hiện thanh toán thêm trong thời gian
+                                cam kết</p>
                         </div>
                         <Switch
                             checked={formData.earlyRepaymentPenaltyConfig.enabled}
                             onCheckedChange={(checked) => setFormData({
                                 ...formData,
-                                earlyRepaymentPenaltyConfig: { ...formData.earlyRepaymentPenaltyConfig, enabled: checked }
+                                earlyRepaymentPenaltyConfig: {...formData.earlyRepaymentPenaltyConfig, enabled: checked}
                             })}
                         />
                     </div>
@@ -315,7 +340,10 @@ export default function LoanForm() {
                                     value={formData.earlyRepaymentPenaltyConfig.rate}
                                     onChange={(e) => setFormData({
                                         ...formData,
-                                        earlyRepaymentPenaltyConfig: { ...formData.earlyRepaymentPenaltyConfig, rate: Number(e.target.value) }
+                                        earlyRepaymentPenaltyConfig: {
+                                            ...formData.earlyRepaymentPenaltyConfig,
+                                            rate: Number(e.target.value)
+                                        }
                                     })}
                                 />
                             </div>
@@ -326,7 +354,10 @@ export default function LoanForm() {
                                     value={formData.earlyRepaymentPenaltyConfig.durationMonths}
                                     onChange={(e) => setFormData({
                                         ...formData,
-                                        earlyRepaymentPenaltyConfig: { ...formData.earlyRepaymentPenaltyConfig, durationMonths: Number(e.target.value) }
+                                        earlyRepaymentPenaltyConfig: {
+                                            ...formData.earlyRepaymentPenaltyConfig,
+                                            durationMonths: Number(e.target.value)
+                                        }
                                     })}
                                 />
                             </div>
@@ -352,7 +383,7 @@ export default function LoanForm() {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
 
@@ -367,7 +398,7 @@ export default function LoanForm() {
                                 value={formData.fees.originationFee}
                                 onChange={(e) => setFormData({
                                     ...formData,
-                                    fees: { ...formData.fees, originationFee: Number(e.target.value) }
+                                    fees: {...formData.fees, originationFee: Number(e.target.value)}
                                 })}
                             />
                         </div>
@@ -380,7 +411,7 @@ export default function LoanForm() {
                                 value={formData.fees.earlyRepaymentPenalty}
                                 onChange={(e) => setFormData({
                                     ...formData,
-                                    fees: { ...formData.fees, earlyRepaymentPenalty: Number(e.target.value) }
+                                    fees: {...formData.fees, earlyRepaymentPenalty: Number(e.target.value)}
                                 })}
                             />
                         </div>
@@ -392,7 +423,7 @@ export default function LoanForm() {
                                 value={formData.fees.fixedProcessingFee}
                                 onChange={(e) => setFormData({
                                     ...formData,
-                                    fees: { ...formData.fees, fixedProcessingFee: Number(e.target.value) }
+                                    fees: {...formData.fees, fixedProcessingFee: Number(e.target.value)}
                                 })}
                             />
                         </div>
@@ -403,7 +434,7 @@ export default function LoanForm() {
             <div className="pt-4">
                 <Button
                     type="submit"
-                    className="w-full text-lg py-3 shadow-lg shadow-blue-500/20"
+                    className="w-full text-lg py-3 shadow-lg"
                     disabled={Object.keys(validationErrors).length > 0}
                 >
                     Tính toán khoản vay

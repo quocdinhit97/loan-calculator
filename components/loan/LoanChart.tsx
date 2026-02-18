@@ -33,7 +33,7 @@ export default function LoanChart({ schedule }: LoanChartProps) {
     };
 
     return (
-        <Card className="mb-8">
+        <Card className="mb-4">
             <h3 className="text-lg font-bold text-gray-900 mb-6">Biểu đồ dư nợ & lãi tích lũy</h3>
             <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">

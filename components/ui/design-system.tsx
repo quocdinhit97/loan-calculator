@@ -3,14 +3,14 @@ import React from 'react';
 export const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'outline' }>(
     ({ className, variant = 'primary', ...props }, ref) => {
         const specificStyles = {
-            primary: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+            primary: 'bg-primary text-white hover:bg-primary/90 shadow-sm',
             secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
             outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
         };
         return (
             <button
                 ref={ref}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${specificStyles[variant]} ${className || ''}`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${specificStyles[variant]} ${className || ''}`}
                 {...props}
             />
         );
@@ -23,7 +23,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttribute
         return (
             <input
                 ref={ref}
-                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-50 ${className || ''}`}
+                className={`font-mono w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors disabled:bg-gray-50 ${className || ''}`}
                 {...props}
             />
         );

@@ -1,8 +1,11 @@
-import { calculateLoan } from '@/lib/loanEngine';
+import { calculateLoan, calculateInterestSensitivity } from '@/lib/loanEngine';
 import { LoanInput } from '@/types/loan';
 import LoanSummary from '@/components/loan/LoanSummary';
 import LoanChart from '@/components/loan/LoanChart';
 import LoanTable from '@/components/loan/LoanTable';
+import TotalCostDonut from '@/components/charts/TotalCostDonut';
+import RemainingBalanceChart from '@/components/charts/RemainingBalanceChart';
+import InterestSensitivityChart from '@/components/charts/InterestSensitivityChart';
 import { Button } from '@/components/ui/design-system';
 import Link from 'next/link';
 
@@ -30,9 +33,19 @@ export default async function ResultPage({
     }
 
     let result;
+    let input: LoanInput;
+    let sensitivityData;
     try {
-        const input: LoanInput = JSON.parse(dataString);
+        input = JSON.parse(dataString);
         result = calculateLoan(input);
+
+        // Calculate interest rate sensitivity
+        sensitivityData = calculateInterestSensitivity(
+            input.principal,
+            input.loanTermYears,
+            input.baseInterestRate,
+            input.fees
+        );
     } catch (error) {
         console.error("Error parsing loan input:", error);
         return (
@@ -60,13 +73,31 @@ export default async function ResultPage({
 
                 <LoanSummary result={result} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-3">
-                        <LoanChart schedule={result.schedule} />
+                <div className="grid grid-cols-1 gap-8">
+                    {/* Main Amortization Chart */}
+                    <LoanChart schedule={result.schedule} />
+
+                    {/* New Analytics Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Total Cost Breakdown */}
+                        <TotalCostDonut
+                            principal={input.principal}
+                            totalInterest={result.totalInterest}
+                            totalPenalties={result.schedule.reduce((sum, item) => sum + item.penaltyAmount, 0)}
+                        />
+
+                        {/* Remaining Balance */}
+                        <RemainingBalanceChart schedule={result.schedule} />
                     </div>
-                    <div className="lg:col-span-3">
-                        <LoanTable schedule={result.schedule} />
-                    </div>
+
+                    {/* Detailed Schedule Table */}
+                    <LoanTable schedule={result.schedule} />
+
+                    {/* Interest Sensitivity */}
+                    <InterestSensitivityChart
+                        sensitivityData={sensitivityData}
+                        baseRate={input.baseInterestRate}
+                    />
                 </div>
             </div>
         </main>

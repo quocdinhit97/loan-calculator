@@ -170,14 +170,17 @@ Dư nợ cuối = 1,783,746,919 - 2,970,123 = 1,780,776,796
 Thanh toán = sẽ tính lại dựa trên dư nợ còn lại tại tháng 60 và lãi suất 8.5%
 
 
-5.6 So sánh: Lãi suất cố định vs. Lãi suất thay đổi
+## 5.6 So sánh: Lãi suất cố định vs. Lãi suất thay đổi
 Yếu tốLãi suất cố định (8.5%)Lãi suất thay đổi (6%→10%→8.5%)Kỳ đầu tiên₫17,356,465₫14,328,621Giai đoạn 1 (24 tháng)₫17,356,465₫14,328,621Giai đoạn 2 (36 tháng)₫17,356,465₫17,834,681Tổng thanh toánCao hơn ở giai đoạn 1Thấp hơn ở giai đoạn 1, cao hơn ở giai đoạn 2
 
-TÓM TẮT CÔNG THỨC ĐẦY ĐỦ (Phần 5 - Cập nhật)
-Với lãi suất thay đổi theo giai đoạn, lãi tháng k được tính như sau:
-Lãi tháng k = Dư nợ tháng k-1 × r_hiện_tại
 
-Trong đó r_hiện_tại là:
+# TÓM TẮT CÔNG THỨC ĐẦY ĐỦ (Phần 5 - Cập nhật)
+Với lãi suất thay đổi theo giai đoạn, lãi tháng k được tính như sau:
+```
+Lãi tháng k = Dư nợ tháng k-1 × r_hiện_tại
+```
+
+### Trong đó r_hiện_tại là:
   - r₁ nếu tháng k ≤ n₁ (giai đoạn 1)
   - r₂ nếu n₁ < tháng k ≤ n₁+n₂ (giai đoạn 2)
   - r₃ nếu n₁+n₂ < tháng k ≤ n₁+n₂+n₃ (giai đoạn 3)
