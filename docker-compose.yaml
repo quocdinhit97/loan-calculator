@@ -1,9 +1,9 @@
 services:
   app:
-    image: quocdinhit97/newthue:latest
-    container_name: newthue-app
+    image: quocdinhit97/loan-calc:latest
+    container_name: loan-calc-app
     restart: always
     ports:
-      - "2026:3000"
+      - "2027:3000"
     environment:
       - NODE_ENV=production
